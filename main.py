@@ -8,7 +8,9 @@ from scipy.io import wavfile
 from scipy.io.wavfile import write
 import numpy as np
 import numpy.ma as ma
+
 import sanalyze as saz
+import eanalyze as eaz
 
 app = Flask(__name__, template_folder='templates')
 
@@ -16,6 +18,7 @@ UPLOAD_FOLDER = 'uploads/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 text = []
+
 def split_phrases(filepath):
     samplerate, data = wavfile.read(filepath)
 
@@ -47,6 +50,8 @@ def split_phrases(filepath):
     ct = 0
     r = sr.Recognizer()
     out = []
+    if len(data.shape) != 1:
+        data = data[:, 0]
     for i in range(1, len(ind)):
         if ind[i] - ind[i - 1] > 1:
             write(f'out/out{ct}.wav', samplerate, data[ind[i - 1] : ind[i]])
@@ -58,7 +63,7 @@ def split_phrases(filepath):
                     out.append(text)
                 except sr.UnknownValueError:
                     print('?')
-                    out.append('<Could Not Recognize Speech>')
+                    # out.append('<Could Not Recognize Speech>')
                     out.append(None)
             ct+=1
     return out
@@ -67,10 +72,12 @@ def split_phrases(filepath):
 def analysis(filename):
     phrases = split_phrases(os.path.join(app.config['UPLOAD_FOLDER'], filename))
     s = saz.analyze(phrases)
-    i = [i * -1000 for i in range(len(text))]
-    # text.append('yes')
-    # s = [50, 100]
-    i = [-50, -100]
+    i = []
+    for ct in range(len(phrases)):
+        if phrases[ct] == None:
+            i.append(0)
+            continue
+        i.append(eaz.e_analyze(f'out/out{ct}.wav'))
     return render_template('analysis.html', data={ 'phrases' : phrases, 'sentiment': s, 'intonation' : i})
 
 
