@@ -1,0 +1,20 @@
+#navText {
+    color:#0D6EFD;
+}
+
+* {
+    font-family: 'Rubik', sans-serif;
+}
+
+body {
+    background-color: #343A40;
+}
+
+#topContainer {
+    text-align: center;
+    color: white;
+}
+
+.stepText {
+    color: white;
+}
