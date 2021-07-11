@@ -8,6 +8,7 @@ from scipy.io import wavfile
 from scipy.io.wavfile import write
 import numpy as np
 import numpy.ma as ma
+import sanalyze as saz
 
 app = Flask(__name__, template_folder='templates')
 
@@ -57,16 +58,20 @@ def split_phrases(filepath):
                     out.append(text)
                 except sr.UnknownValueError:
                     print('?')
+                    out.append('<Could Not Recognize Speech>')
+                    out.append(None)
             ct+=1
     return out
 
 @app.route('/analysis/<string:filename>', methods=["GET"])
 def analysis(filename):
-    text = split_phrases(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-    s = [i * 1000 for i in range(len(text))]
+    phrases = split_phrases(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    s = saz.analyze(phrases)
     i = [i * -1000 for i in range(len(text))]
-
-    return render_template('analysis.html', data={ 'phrases' : text, 'sentiment': s, 'intonation' : i})
+    # text.append('yes')
+    # s = [50, 100]
+    i = [-50, -100]
+    return render_template('analysis.html', data={ 'phrases' : phrases, 'sentiment': s, 'intonation' : i})
 
 
 @app.route('/evaluate', methods=['GET'])

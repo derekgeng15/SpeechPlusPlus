@@ -28,7 +28,6 @@ for(p of input['phrases']) {
     l.push(count.toString())
     count += 1;
 }
-console.log(l)
 
 $('[data-toggle="popover"]').popover({ 
     html: true,
@@ -56,3 +55,14 @@ let massPopChart = new Chart(myChart, {
     options: {}
 });
 
+
+iaverage = 0
+saverage = 0
+for(i of input['intonation'])
+    iaverage += i;
+for(s of input['sentiment'])
+    saverage += s;
+iaverage /= count;
+saverage /= count;
+document.getElementById('sentimentbar').style.width= (saverage / 2 + 50).toString() + '%'
+document.getElementById('intonationbar').style.width= (iaverage / 2 + 50).toString() + '%'
