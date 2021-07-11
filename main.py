@@ -68,6 +68,7 @@ def analysis(filename):
 
     return render_template('analysis.html', data={ 'phrases' : text, 'sentiment': s, 'intonation' : i})
 
+
 @app.route('/evaluate', methods=['GET'])
 def evaluate():
     print(text)
