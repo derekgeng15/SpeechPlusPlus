@@ -20,7 +20,7 @@ def split_phrases(filepath):
 
     if len(data.shape) == 1:
         data = np.array([data, data]).transpose()
-    print(data)
+    # print(data)
     length = data.shape[0] / samplerate
     time = np.linspace(0., length, data.shape[0])
 
@@ -60,9 +60,13 @@ def split_phrases(filepath):
             ct+=1
     return out
 
-@app.route('/analysis', methods=["GET"])
-def analysis():
-    return render_template('analysis.html')
+@app.route('/analysis/<string:filename>', methods=["GET"])
+def analysis(filename):
+    text = split_phrases(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    s = [i * 1000 for i in range(len(text))]
+    i = [i * -1000 for i in range(len(text))]
+
+    return render_template('analysis.html', data={ 'phrases' : text, 'sentiment': s, 'intonation' : i})
 
 @app.route('/evaluate', methods=['GET'])
 def evaluate():
@@ -83,9 +87,8 @@ def home():
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         print('file saved')
-        text = split_phrases(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         print(text)
-        return redirect('/evaluate')
+        return redirect(f'/analysis/{filename}')
     return render_template('home.html')
 
 
