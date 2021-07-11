@@ -1,12 +1,12 @@
 
 
 $(function () {
-    $('[data-toggle="popover"]').popover();
-  });
+  $('[data-toggle="popover"]').popover();
+});
 
 
 $('.popover-dismiss').popover({
-  trigger: 'focus'
+trigger: 'focus'
 })
 
 var uploadBtn = document.getElementById("uploadBtn");
@@ -16,5 +16,5 @@ var fileInputLabel = document.getElementById("fileInputLabel");
 
 
 function changeFileName() {
-  fileInputLabel.innerText = input.files[0].name;
+fileInputLabel.innerText = input.files[0].name;
 }

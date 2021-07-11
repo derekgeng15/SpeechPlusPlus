@@ -60,6 +60,10 @@ def split_phrases(filepath):
             ct+=1
     return out
 
+@app.route('/analysis', methods=["GET"])
+def analysis():
+    return render_template('analysis.html')
+
 @app.route('/evaluate', methods=['GET'])
 def evaluate():
     print(text)
